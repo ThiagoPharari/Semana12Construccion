@@ -15,12 +15,12 @@ spring:
     # url : jdbc:mysql://localhost:3306/PETCLINIC_DB?useSSL=false&serverTimezone=UTC
 
     # for IntelliJ IDEA
-    # username : root # admin # root
-    # password :      # A$dmin123
+    username : root # admin # root
+    password :      # A$dmin123
 
     # for AWS
-    username :  admin # root
-    password :  A$dmin123
+    #username :  admin # root
+    #password :  A$dmin123
 
 
     platform : mysql
