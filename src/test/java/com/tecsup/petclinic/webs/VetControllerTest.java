@@ -40,14 +40,14 @@ public class VetControllerTest {
 
 	@Test
 	public void testFindVetOK() throws Exception {
-		String VET_NAME = "James";
+		String VET_FIRST_NAME = "James";
 
 		mockMvc.perform(get("/vets/1"))
 				.andExpect(content().contentType(MediaType.APPLICATION_JSON))
 				.andDo(print())
 				.andExpect(status().isOk())
 				.andExpect(jsonPath("$.id", is(1)))
-				.andExpect(jsonPath("$.name", is(VET_NAME)));
+				.andExpect(jsonPath("$.firstName", is(VET_FIRST_NAME)));
 	}
 
 	@Test
@@ -58,23 +58,23 @@ public class VetControllerTest {
 
 	@Test
 	public void testCreateVet() throws Exception {
-		String VET_NAME = "Dr. Who";
+		String VET_FIRST_NAME = "Dr. Who";
 		VetTO newVetTO = new VetTO();
-		newVetTO.setName(VET_NAME);
+		newVetTO.setFirstName(VET_FIRST_NAME);
 
 		mockMvc.perform(post("/vets")
 						.content(om.writeValueAsString(newVetTO))
 						.header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON))
 				.andDo(print())
 				.andExpect(status().isCreated())
-				.andExpect(jsonPath("$.name", is(VET_NAME)));
+				.andExpect(jsonPath("$.firstName", is(VET_FIRST_NAME)));
 	}
 
 	@Test
 	public void testDeleteVet() throws Exception {
 		String VET_NAME = "Dr. Smith";
 		VetTO newVetTO = new VetTO();
-		newVetTO.setName(VET_NAME);
+		newVetTO.setFirstName(VET_NAME);
 
 		ResultActions mvcActions = mockMvc.perform(post("/vets")
 						.content(om.writeValueAsString(newVetTO))

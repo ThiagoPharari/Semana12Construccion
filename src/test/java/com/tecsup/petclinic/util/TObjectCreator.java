@@ -12,7 +12,6 @@ import java.util.List;
 
 public class TObjectCreator {
 
-	// Métodos para Pet
 	public static Pet getPet() {
 		return new Pet(1, "Leo", 1, 1, null);
 	}
@@ -55,6 +54,38 @@ public class TObjectCreator {
 		petTOs.add(new PetTO(4, "Jewel", 2, 3, "2000-03-07"));
 		petTOs.add(new PetTO(5, "Iggy", 3, 4, "2000-11-30"));
 		return petTOs;
+	}
+
+	public static List<Pet> getPetsForFindByName() {
+		List<Pet> pets = new ArrayList<>();
+		pets.add(new Pet(1, "Leo", 1, 1, null));
+		return pets;
+	}
+
+	public static List<Pet> getPetsForFindByTypeId() {
+		List<Pet> pets = new ArrayList<>();
+		pets.add(new Pet(9, "Lucky", 5, 7, null));
+		pets.add(new Pet(11, "Freddy", 5, 9, null));
+		return pets;
+	}
+
+	public static List<Pet> getPetsForFindByOwnerId() {
+		List<Pet> pets = new ArrayList<>();
+		pets.add(new Pet(12, "Lucky", 2, 10, null));
+		pets.add(new Pet(13, "Sly", 1, 10, null));
+		return pets;
+	}
+
+	public static PetTO getPetTO() {
+		return new PetTO(1, "Leo", 1, 1, "2000-09-07");
+	}
+
+	public static PetTO newPetTO() {
+		return new PetTO(-1, "Beethoven", 1, 1, "2020-05-20");
+	}
+
+	public static PetTO newPetTOForDelete() {
+		return new PetTO(10000, "Beethoven3", 1, 1, "2020-05-20");
 	}
 
 	// Métodos para Specialty
@@ -115,57 +146,58 @@ public class TObjectCreator {
 
 	// Métodos para Vet
 	public static Vet getVet() {
-		return new Vet(1, "Dr. John", "Doe");
+		return new Vet(1, "John", "Doe");
 	}
 
 	public static Vet newVet() {
-		return new Vet(0, "Dr. Jane", "Smith");
+		return new Vet(0, "Jane", "Smith"); // id temporal como 0
 	}
 
 	public static Vet newVetCreated() {
 		Vet vet = newVet();
-		vet.setId(1000);
+		vet.setId(1000); // Nuevo id asignado tras creación
 		return vet;
 	}
 
 	public static Vet newVetForUpdate() {
-		return new Vet(0, "Dr. Jim", "Brown");
+		return new Vet(0, "Jim", "Brown"); // id temporal como 0
 	}
 
 	public static Vet newVetCreatedForUpdate() {
 		Vet vet = newVetForUpdate();
-		vet.setId(4000);
+		vet.setId(4000); // Nuevo id asignado tras actualización
 		return vet;
 	}
 
 	public static Vet newVetForDelete() {
-		return new Vet(0, "Dr. Jack", "Green");
+		return new Vet(0, "Jack", "Green"); // id temporal como 0
 	}
 
 	public static Vet newVetCreatedForDelete() {
 		Vet vet = newVetForDelete();
-		vet.setId(2000);
+		vet.setId(2000); // Nuevo id asignado para eliminación
 		return vet;
 	}
 
 	public static List<VetTO> getAllVetTOs() {
 		List<VetTO> vetTOs = new ArrayList<>();
-		vetTOs.add(new VetTO(1, "Dr. John Doe"));
-		vetTOs.add(new VetTO(2, "Dr. Jane Smith"));
-		vetTOs.add(new VetTO(3, "Dr. Jim Brown"));
-		vetTOs.add(new VetTO(4, "Dr. Jack Green"));
+		vetTOs.add(new VetTO(1, "James", "Carter"));
+		vetTOs.add(new VetTO(2, "Helen", "Leary"));
+		vetTOs.add(new VetTO(3, "Linda", "Douglas"));
+		vetTOs.add(new VetTO(4, "Rafael", "Ortega"));
 		return vetTOs;
 	}
 
 	public static VetTO getVetTO() {
-		return new VetTO(1, "Dr. John Doe");
+		return new VetTO(1, "James", "Carter");
 	}
 
 	public static VetTO newVetTO() {
-		return new VetTO(-1, "Dr. Emily White");
+		return new VetTO(-1, "Emily", "White");
 	}
 
 	public static VetTO newVetTOForDelete() {
-		return new VetTO(10000, "Dr. Robert Black");
+		return new VetTO(10000, "Robert", "Black");
 	}
 }
+

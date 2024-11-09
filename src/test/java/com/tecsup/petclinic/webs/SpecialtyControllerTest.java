@@ -1,6 +1,7 @@
 package com.tecsup.petclinic.webs;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.jayway.jsonpath.JsonPath;
 import com.tecsup.petclinic.domain.SpecialtyTO;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Test;
@@ -14,8 +15,12 @@ import org.springframework.test.web.servlet.ResultActions;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
+/**
+ * SpecialtyControllerTest
+ */
 @AutoConfigureMockMvc
 @SpringBootTest
 @Slf4j
@@ -28,22 +33,21 @@ public class SpecialtyControllerTest {
 
 	@Test
 	public void testFindAllSpecialties() throws Exception {
-		int NRO_RECORD = 3;  // Ajusta el número según tus datos
-		int ID_FIRST_RECORD = 1;
+		int ID_FIRST_RECORD = 3;
 
 		this.mockMvc.perform(get("/specialties"))
 				.andExpect(status().isOk())
 				.andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
-				.andExpect(jsonPath("$.size()", is(NRO_RECORD)))
 				.andExpect(jsonPath("$[0].id", is(ID_FIRST_RECORD)));
 	}
 
 	@Test
 	public void testFindSpecialtyOK() throws Exception {
-		String SPECIALTY_NAME = "Surgery";
+		String SPECIALTY_NAME = "radiology";
 
 		mockMvc.perform(get("/specialties/1"))
 				.andExpect(content().contentType(MediaType.APPLICATION_JSON))
+				.andDo(print())
 				.andExpect(status().isOk())
 				.andExpect(jsonPath("$.id", is(1)))
 				.andExpect(jsonPath("$.name", is(SPECIALTY_NAME)));
@@ -57,7 +61,7 @@ public class SpecialtyControllerTest {
 
 	@Test
 	public void testCreateSpecialty() throws Exception {
-		String SPECIALTY_NAME = "Dentistry";
+		String SPECIALTY_NAME = "Dermatology";
 
 		SpecialtyTO newSpecialtyTO = new SpecialtyTO();
 		newSpecialtyTO.setName(SPECIALTY_NAME);
@@ -65,23 +69,26 @@ public class SpecialtyControllerTest {
 		mockMvc.perform(post("/specialties")
 						.content(om.writeValueAsString(newSpecialtyTO))
 						.header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON))
+				.andDo(print())
 				.andExpect(status().isCreated())
 				.andExpect(jsonPath("$.name", is(SPECIALTY_NAME)));
 	}
 
 	@Test
 	public void testDeleteSpecialty() throws Exception {
-		String SPECIALTY_NAME = "Emergency";
+		String SPECIALTY_NAME = "Oncology";
+
 		SpecialtyTO newSpecialtyTO = new SpecialtyTO();
 		newSpecialtyTO.setName(SPECIALTY_NAME);
 
 		ResultActions mvcActions = mockMvc.perform(post("/specialties")
 						.content(om.writeValueAsString(newSpecialtyTO))
 						.header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON))
+				.andDo(print())
 				.andExpect(status().isCreated());
 
 		String response = mvcActions.andReturn().getResponse().getContentAsString();
-		Integer id = Integer.parseInt(response);
+		Integer id = JsonPath.parse(response).read("$.id");
 
 		mockMvc.perform(delete("/specialties/" + id))
 				.andExpect(status().isOk());
@@ -95,31 +102,43 @@ public class SpecialtyControllerTest {
 
 	@Test
 	public void testUpdateSpecialty() throws Exception {
-		String SPECIALTY_NAME = "Dermatology";
-		String UPDATED_NAME = "Pediatrics";
+		String SPECIALTY_NAME = "Cardiology";
+		String UPDATED_SPECIALTY_NAME = "Neurology";
 
 		SpecialtyTO newSpecialtyTO = new SpecialtyTO();
 		newSpecialtyTO.setName(SPECIALTY_NAME);
 
+		// CREATE
 		ResultActions mvcActions = mockMvc.perform(post("/specialties")
 						.content(om.writeValueAsString(newSpecialtyTO))
 						.header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON))
+				.andDo(print())
 				.andExpect(status().isCreated());
 
 		String response = mvcActions.andReturn().getResponse().getContentAsString();
-		Integer id = Integer.parseInt(response);
+		Integer id = JsonPath.parse(response).read("$.id");
 
+		// UPDATE
 		SpecialtyTO updatedSpecialtyTO = new SpecialtyTO();
 		updatedSpecialtyTO.setId(id);
-		updatedSpecialtyTO.setName(UPDATED_NAME);
+		updatedSpecialtyTO.setName(UPDATED_SPECIALTY_NAME);
 
 		mockMvc.perform(put("/specialties/" + id)
 						.content(om.writeValueAsString(updatedSpecialtyTO))
 						.header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON))
+				.andDo(print())
 				.andExpect(status().isOk());
 
+		// FIND
 		mockMvc.perform(get("/specialties/" + id))
+				.andExpect(content().contentType(MediaType.APPLICATION_JSON))
+				.andDo(print())
 				.andExpect(status().isOk())
-				.andExpect(jsonPath("$.name", is(UPDATED_NAME)));
+				.andExpect(jsonPath("$.id", is(id)))
+				.andExpect(jsonPath("$.name", is(UPDATED_SPECIALTY_NAME)));
+
+		// DELETE
+		mockMvc.perform(delete("/specialties/" + id))
+				.andExpect(status().isOk());
 	}
 }

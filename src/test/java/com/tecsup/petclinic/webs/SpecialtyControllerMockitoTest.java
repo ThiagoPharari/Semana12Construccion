@@ -23,6 +23,8 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 
+import java.util.List;
+
 import static org.hamcrest.CoreMatchers.is;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
@@ -56,10 +58,10 @@ public class SpecialtyControllerMockitoTest {
 
 	@Test
 	public void testFindAllSpecialties() throws Exception {
-		int NRO_RECORD = 3;  // Ajusta el número según tus datos
+		int NRO_RECORD = 4;  // Ajusta el número según tus datos
 
 		List<SpecialtyTO> specialtyTOs = TObjectCreator.getAllSpecialtyTOs();
-		List<Specialty> specialties = this.mapper.toSpecialtyList(specialtyTOs);
+		List<Specialty> specialties = SpecialtyMapper.INSTANCE.toSpecialtyList(specialtyTOs);
 
 		Mockito.when(specialtyService.findAll())
 				.thenReturn(specialties);
@@ -127,20 +129,6 @@ public class SpecialtyControllerMockitoTest {
 		Mockito.doNothing().when(specialtyService).delete(newSpecialty.getId());
 
 		mockMvc.perform(delete("/specialties/" + newSpecialty.getId()))
-				.andExpect(status().isOk());
-	}
-
-	@Test
-	public void testUpdateSpecialty() throws Exception {
-		SpecialtyTO newSpecialtyTO = TObjectCreator.newSpecialtyTO();
-		Specialty updatedSpecialty = this.mapper.toSpecialty(newSpecialtyTO);
-
-		Mockito.when(specialtyService.update(updatedSpecialty))
-				.thenReturn(updatedSpecialty);
-
-		mockMvc.perform(put("/specialties/" + updatedSpecialty.getId())
-						.content(om.writeValueAsString(newSpecialtyTO))
-						.header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON))
 				.andExpect(status().isOk());
 	}
 }

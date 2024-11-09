@@ -61,7 +61,7 @@ public class VetControllerMockitoTest {
 
 	@Test
 	public void testFindAllVets() throws Exception {
-		int NRO_RECORD = 5;
+		int NRO_RECORD = 4;
 		int ID_FIRST_RECORD = 1;
 
 		List<VetTO> vetTOs = TObjectCreator.getAllVetTOs();
@@ -79,19 +79,24 @@ public class VetControllerMockitoTest {
 
 	@Test
 	public void testFindVetOK() throws Exception {
-		VetTO vetTO = TObjectCreator.getVetTO();
-		Vet vet = this.mapper.toVet(vetTO);
+		// Creamos un objeto VetTO con datos de prueba
+		VetTO vetTO = TObjectCreator.getVetTO(); // Verifica que este método esté retornando los datos correctamente.
+		Vet vet = this.mapper.toVet(vetTO); // Convertimos VetTO a Vet
 
+		// Mockeamos el servicio para obtener un Vet por id
 		Mockito.when(vetService.findById(vet.getId()))
 				.thenReturn(vet);
 
+		// Realizamos la petición GET a la URL "/vets/1" para buscar un vet por su id
 		mockMvc.perform(get("/vets/1"))
-				.andExpect(content().contentType(MediaType.APPLICATION_JSON))
+				.andExpect(content().contentType(MediaType.APPLICATION_JSON)) // Verificamos el tipo de contenido
 				.andDo(print())
-				.andExpect(status().isOk())
-				.andExpect(jsonPath("$.id", is(vetTO.getId())))
-				.andExpect(jsonPath("$.name", is(vetTO.getName())));
+				.andExpect(status().isOk()) // Verificamos que el código de estado sea 200 (OK)
+				.andExpect(jsonPath("$.id", is(vetTO.getId()))) // Verificamos que el id sea correcto
+				.andExpect(jsonPath("$.firstName", is(vetTO.getFirstName()))) // Verificamos el primer nombre
+				.andExpect(jsonPath("$.lastName", is(vetTO.getLastName()))); // Verificamos el apellido
 	}
+
 
 	@Test
 	public void testFindVetKO() throws Exception {
@@ -106,19 +111,24 @@ public class VetControllerMockitoTest {
 
 	@Test
 	public void testCreateVet() throws Exception {
-		VetTO newVetTO = TObjectCreator.newVetTO();
-		Vet newVet = this.mapper.toVet(newVetTO);
+		// Creamos el objeto DTO (VetTO) con datos de prueba
+		VetTO newVetTO = TObjectCreator.newVetTO(); // Verifica que este método esté retornando los datos correctamente.
+		Vet newVet = this.mapper.toVet(newVetTO);  // Mapeamos VetTO a Vet
 
+		// Mockeamos el servicio para crear un nuevo vet
 		Mockito.when(vetService.create(newVet))
 				.thenReturn(newVet);
 
+		// Realizamos el POST a la URL "/vets" y validamos la respuesta
 		mockMvc.perform(post("/vets")
-						.content(om.writeValueAsString(newVetTO))
+						.content(om.writeValueAsString(newVetTO)) // Convertimos el DTO en un JSON
 						.header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON))
 				.andDo(print())
-				.andExpect(status().isCreated())
-				.andExpect(jsonPath("$.name", is(newVetTO.getName())));
+				.andExpect(status().isCreated()) // Verificamos que el código de estado sea 201 (Creado)
+				.andExpect(jsonPath("$.firstName", is(newVetTO.getFirstName()))) // Verificamos el primer nombre
+				.andExpect(jsonPath("$.lastName", is(newVetTO.getLastName()))); // Verificamos el apellido
 	}
+
 
 	@Test
 	public void testDeleteVet() throws Exception {

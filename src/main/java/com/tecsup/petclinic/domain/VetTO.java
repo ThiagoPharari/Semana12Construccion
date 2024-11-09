@@ -22,7 +22,4 @@ public class VetTO {
 
     private String lastName;
 
-    // Lista de especialidades del veterinario, representadas como nombres de especialidades.
-    private List<String> specialties;
-
 }

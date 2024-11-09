@@ -21,28 +21,18 @@ public class Vet {
 
     private String lastName;
 
-    // Relación Many-to-Many con Specialty
-    @ManyToMany
-    @JoinTable(
-            name = "vet_specialties",
-            joinColumns = @JoinColumn(name = "vet_id"),
-            inverseJoinColumns = @JoinColumn(name = "specialty_id")
-    )
-    private Set<Specialty> specialties;
 
     public Vet() {
     }
 
-    public Vet(Integer id, String firstName, String lastName, Set<Specialty> specialties) {
+    public Vet(Integer id, String firstName, String lastName) {
         this.id = id;
         this.firstName = firstName;
         this.lastName = lastName;
-        this.specialties = specialties;
     }
 
-    public Vet(String firstName, String lastName, Set<Specialty> specialties) {
+    public Vet(String firstName, String lastName) {
         this.firstName = firstName;
         this.lastName = lastName;
-        this.specialties = specialties;
     }
 }
