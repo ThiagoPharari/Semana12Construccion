@@ -58,34 +58,32 @@ public class VetControllerTest {
 
 	@Test
 	public void testCreateVet() throws Exception {
-		String VET_FIRST_NAME = "Dr. Who";
+		String VET_FIRST_NAME = "Thiago";
+		String VET_LAST_NAME = "Pharari";
+
 		VetTO newVetTO = new VetTO();
 		newVetTO.setFirstName(VET_FIRST_NAME);
+		newVetTO.setLastName(VET_LAST_NAME);
 
 		mockMvc.perform(post("/vets")
 						.content(om.writeValueAsString(newVetTO))
 						.header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON))
 				.andDo(print())
 				.andExpect(status().isCreated())
-				.andExpect(jsonPath("$.firstName", is(VET_FIRST_NAME)));
+				.andExpect(jsonPath("$.firstName", is(VET_FIRST_NAME)))
+				.andExpect(jsonPath("$.lastName", is(VET_LAST_NAME)));
 	}
+
 
 	@Test
 	public void testDeleteVet() throws Exception {
-		String VET_NAME = "Dr. Smith";
-		VetTO newVetTO = new VetTO();
-		newVetTO.setFirstName(VET_NAME);
+		Integer vetId = 14;
 
-		ResultActions mvcActions = mockMvc.perform(post("/vets")
-						.content(om.writeValueAsString(newVetTO))
-						.header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON))
+		mockMvc.perform(delete("/vets/" + vetId))
 				.andDo(print())
-				.andExpect(status().isCreated());
-
-		String response = mvcActions.andReturn().getResponse().getContentAsString();
-		Integer id = JsonPath.parse(response).read("$.id");
-
-		mockMvc.perform(delete("/vets/" + id))
 				.andExpect(status().isOk());
+
+		mockMvc.perform(get("/vets/" + vetId))
+				.andExpect(status().isNotFound());
 	}
 }

@@ -76,23 +76,19 @@ public class SpecialtyControllerTest {
 
 	@Test
 	public void testDeleteSpecialty() throws Exception {
-		String SPECIALTY_NAME = "Oncology";
+		Integer specialtyId = 9;
 
-		SpecialtyTO newSpecialtyTO = new SpecialtyTO();
-		newSpecialtyTO.setName(SPECIALTY_NAME);
-
-		ResultActions mvcActions = mockMvc.perform(post("/specialties")
-						.content(om.writeValueAsString(newSpecialtyTO))
-						.header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON))
+		mockMvc.perform(get("/specialties/" + specialtyId))
 				.andDo(print())
-				.andExpect(status().isCreated());
-
-		String response = mvcActions.andReturn().getResponse().getContentAsString();
-		Integer id = JsonPath.parse(response).read("$.id");
-
-		mockMvc.perform(delete("/specialties/" + id))
 				.andExpect(status().isOk());
+
+		mockMvc.perform(delete("/specialties/" + specialtyId))
+				.andExpect(status().isOk());
+
+		mockMvc.perform(get("/specialties/" + specialtyId))
+				.andExpect(status().isNotFound());
 	}
+
 
 	@Test
 	public void testDeleteSpecialtyKO() throws Exception {

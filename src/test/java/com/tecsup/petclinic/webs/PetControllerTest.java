@@ -29,12 +29,10 @@ public class PetControllerTest {
 
 	@Autowired
 	private MockMvc mockMvc;
-	
 	@Test
 	public void testFindAllPets() throws Exception {
 
-		//int NRO_RECORD = 73;
-		int ID_FIRST_RECORD = 1;
+		int ID_FIRST_RECORD =1;
 
 		this.mockMvc.perform(get("/pets"))
 				.andExpect(status().isOk())
